@@ -5,8 +5,8 @@ use iced::{
 #[derive(Default)]
 pub struct Application {
     calc_type: u8,
-    nota_atividade: f32,
-    nota_prova: f32,
+    nota_atividade: String,
+    nota_prova: String,
     result: f32,
 
     button_calc_media: button::State,
@@ -47,11 +47,11 @@ impl iced::Application for Application {
         match message {
             Message::SwipeType(type_calc) => self.calc_type = type_calc,
             Message::NotaAtividadesChange(nota_raw) => {
-                self.nota_atividade = parse_text_number(nota_raw);
+                self.nota_atividade = nota_raw;
             }
 
             Message::NotaProvaChange(nota_raw) => {
-                self.nota_prova = parse_text_number(nota_raw);
+                self.nota_prova = nota_raw;
             }
         }
 
@@ -78,7 +78,7 @@ impl iced::Application for Application {
         let input_nota_atividades = TextInput::new(
             &mut self.input_nota_atividades,
             "Media notas atividades",
-            &format_number_input(self.nota_atividade),
+            &self.nota_atividade,
             Message::NotaAtividadesChange,
         )
         .width(Length::Units(300))
@@ -93,7 +93,7 @@ impl iced::Application for Application {
         let input_prova = TextInput::new(
             &mut self.input_nota_prova,
             input_prova_name,
-            &format_number_input(self.nota_prova),
+            &self.nota_prova,
             Message::NotaProvaChange,
         )
         .width(Length::Units(300))
@@ -120,23 +120,18 @@ impl iced::Application for Application {
 
 impl Application {
     fn calc(&mut self) {
+        let nota_prova = parse_text_number(&self.nota_prova);
+        let nota_atividades = parse_text_number(&self.nota_atividade);
+
         if self.calc_type == 0 {
-            self.result = (self.nota_prova * 0.6) + (self.nota_atividade * 0.4);
+            self.result = (nota_prova * 0.6) + (nota_atividades * 0.4);
         } else {
-            self.result = (10. * (self.nota_prova - (self.nota_atividade * 0.4))) / 6.
+            self.result = (10. * (nota_prova - (nota_atividades * 0.4))) / 6.
         }
     }
 }
 
-fn format_number_input(input: f32) -> String {
-    if input == 0. {
-        "".to_owned()
-    } else {
-        input.to_string()
-    }
-}
-
-fn parse_text_number(input: String) -> f32 {
+fn parse_text_number(input: &str) -> f32 {
     let parsed_nota = input.parse::<f32>();
 
     if let Ok(nota) = parsed_nota {
