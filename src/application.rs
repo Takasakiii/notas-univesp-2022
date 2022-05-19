@@ -1,5 +1,5 @@
 use iced::{
-    button, executor, text_input, Align, Button, Column, Command, Length, Row, Text, TextInput,
+    button, executor, text_input, Alignment, Button, Column, Command, Length, Row, Text, TextInput,
 };
 
 #[derive(Default)]
@@ -39,11 +39,7 @@ impl iced::Application for Application {
         String::from("Notas Univesp - 2022")
     }
 
-    fn update(
-        &mut self,
-        message: Self::Message,
-        _clipboard: &mut iced::Clipboard,
-    ) -> iced::Command<Self::Message> {
+    fn update(&mut self, message: Self::Message) -> iced::Command<Self::Message> {
         match message {
             Message::SwipeType(type_calc) => self.calc_type = type_calc,
             Message::NotaAtividadesChange(nota_raw) => {
@@ -106,14 +102,14 @@ impl iced::Application for Application {
             .push(input_nota_atividades)
             .push(input_prova)
             .push(result_text)
-            .align_items(Align::Center)
+            .align_items(Alignment::Center)
             .width(Length::Fill)
             .spacing(20);
 
         Row::new()
             .push(center_screen)
             .height(Length::Fill)
-            .align_items(Align::Center)
+            .align_items(Alignment::Center)
             .into()
     }
 }
